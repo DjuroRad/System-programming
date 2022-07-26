@@ -1,0 +1,35 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Homework 2 Report - CSE344}
+\author{Djuro Radusinovic \\ Student no. 171044095 }
+\date{April 2021}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\begin{document}
+
+\maketitle
+
+\section{Composition}
+I made this project fairly lightweight. There are utils.h, utils.c and main.c files that perform everything needed.\\
+
+\section{Program logic}
+In this homework there were 2 main problems. First one was to synchronize communication between parent and its child processes. In order to do that I used SIGUSR1 and SIGSUR2 signals whilst using sigsuspend system call. First of all basic handlers are installed and masks are set to block SIGUSR1 for parent and SIGUSR2 for children. I made shorcut functions for these things so that the code would be more readable. After that I made 8 children in a for loop where each time the parent would be suspended until that child is finished with its first task. After executing their first child all the children are suspended and are waiting for the SIGUSR2 to be sent from parent. Parent sends that signal after it made 8 children to all of them. After that parent is suspended and is waiting for all the children to terminate. That is controled using a handler for SIGCHLD signal in which waitpid systemcall is used in order to count the number of terminated children. \\
+The next problem regarding systems programming I faced was manipulating the file. In order to insert at the end of the row for each child I used a systemcall ftruncate() to make space for the Lagrange interpolation's calculation. \\
+Another problem I stumbled upon was when children were access the file. First lseek() was need in order to keep everything clean and each time child uses this process the file descriptor would go back to start.\\
+Another one was when multiple children were trying to access and write to file. In order to make that process run smoothly I used file locks for writing the result to a file.
+\section{Testing}
+I tested this program using the example file provided\\
+\begin{itemize}
+    \item 
+    Test 1: Checking the program using the example file provided
+        \begin{figure}[h!]
+        \centering
+        \includegraphics[scale=0.2]{test.png}
+        \caption{Test1}
+        \label{fig:universe}
+        \end{figure}
+\end{itemize}
+\end{document}
